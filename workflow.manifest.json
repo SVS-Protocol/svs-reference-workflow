@@ -1,0 +1,38 @@
+{
+  "version": "svs.reference-workflow-manifest.v1",
+  "workflowId": "replace-with-partner-agent-action",
+  "status": "candidate",
+  "agent": {
+    "name": "Replace with external agent name",
+    "botId": "replace-with-public-bot-id",
+    "external": true,
+    "controllerWallet": "replace-with-controller-wallet-public-key",
+    "officialRegistry": {
+      "network": "devnet",
+      "programId": "8oo4J9tBB3Hna1jRQ3rWvJjojqM5DYTDJo5cejUuJy3C",
+      "asset": "replace-with-official-agent-registry-asset-public-key"
+    }
+  },
+  "action": {
+    "txType": "transfer",
+    "network": "devnet",
+    "description": "A treasury agent proposes one capped devnet transfer.",
+    "consequentialReason": "The relying party must reject an altered, stale, replayed, or unapproved transfer."
+  },
+  "relyingParty": {
+    "name": "Replace with protocol, wallet, treasury, or operator name",
+    "type": "protocol",
+    "acceptanceBoundary": "Immediately before the relying system accepts the agent action.",
+    "publicAcceptanceRule": "We reject this automated action unless requireAcceptedAction passes for the exact record.",
+    "freshness": {
+      "certificationMaxAgeMs": 86400000,
+      "actionProofMaxAgeMs": 300000
+    }
+  },
+  "publication": {
+    "agentNameApproved": false,
+    "relyingPartyNameApproved": false,
+    "caseStudyApproved": false
+  }
+}
+

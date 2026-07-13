@@ -1,0 +1,5 @@
+.env
+*.local.env
+output/
+node_modules/
+

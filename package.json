@@ -7,11 +7,14 @@
   "scripts": {
     "validate:template": "node ./run.mjs --check --allow-placeholders",
     "check": "node ./run.mjs --check",
-    "run": "node ./run.mjs"
+    "authorize": "node ./run.mjs --phase authorize",
+    "verify": "node ./run.mjs --phase verify",
+    "run": "npm run verify",
+    "test": "node --test"
   },
   "dependencies": {
     "@solana/web3.js": "1.98.4",
-    "@svsprotocol/solana": "0.4.0",
+    "@svsprotocol/solana": "0.5.0",
     "8004-solana": "0.8.3"
   }
 }

@@ -22,8 +22,8 @@
   "relyingParty": {
     "name": "Replace with protocol, wallet, treasury, or operator name",
     "type": "protocol",
-    "acceptanceBoundary": "Immediately before the relying system accepts the agent action.",
-    "publicAcceptanceRule": "We reject this automated action unless requireAcceptedAction passes for the exact record.",
+    "acceptanceBoundary": "Before broadcast and again before the relying system accepts the executed action.",
+    "publicAcceptanceRule": "We reject this automated action unless requireAuthorizedAction passes before broadcast and requireAcceptedAction passes after execution for the exact record.",
     "freshness": {
       "certificationMaxAgeMs": 86400000,
       "actionProofMaxAgeMs": 300000

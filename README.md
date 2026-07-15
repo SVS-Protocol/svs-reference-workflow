@@ -5,13 +5,15 @@ to prove a real acceptance rule:
 
 > We reject this automated action unless SVS accepts the exact action record.
 
-The runner performs two checks:
+The runner enforces two phases:
 
-1. The expected action must pass `requireAcceptedAction`, including current
-   certification, exact action binding, human approval, execution evidence,
-   custom receipt-registry proof, independent verification, freshness, and the
-   official Agent Registry wallet binding.
-2. The same record with an altered action type must fail closed.
+1. Before broadcast, the exact serialized transaction must pass
+   `requireAuthorizedAction`, including signed request, current human approval,
+   simulation, fee state, transaction binding, certification, and official
+   Agent Registry wallet binding. An altered action probe must fail closed.
+2. After execution, the same record must pass `requireAcceptedAction`, including
+   execution evidence, custom receipt-registry proof, independent verification,
+   freshness, and a second altered-action rejection probe.
 
 It then writes a sanitized JSON result and a draft case study. It never writes
 API keys or request-signing secrets into either output.
@@ -35,17 +37,29 @@ npm run check
 The strict check must report `ready` before the relying party runs the live
 workflow. It fails while any placeholder remains.
 
-After the external action is approved, executed, registered, and independently
+After the external action is approved, but before anyone signs, relays, or
+broadcasts its exact serialized transaction:
+
+```sh
+npm run authorize
+```
+
+The relying system must stop if this command fails. A successful run writes
+`output/authorization-result.json`; it contains decision and hash evidence, not
+the serialized transaction or private credentials.
+
+After that exact transaction is executed, registered, and independently
 verified:
 
 ```sh
-npm run run
+npm run verify
 ```
 
 Outputs:
 
 - `output/verification-result.json`: exact accepted-action decision plus the
-  mandatory mismatch-rejection result.
+  pre-execution authorization handoff and mandatory post-execution mismatch
+  rejection result.
 - `output/case-study.md`: sanitized case-study draft. It remains clearly marked
   as a draft until both partner names and publication are approved.
 
@@ -55,6 +69,8 @@ Outputs:
 - Controller wallet public key.
 - Official Agent Registry asset and network.
 - Exact action-record `txType`.
+- Exact approved serialized transaction, supplied privately through `.env` and
+  never written into the public-safe outputs.
 - Relying party name, acceptance boundary, and fail-closed public rule.
 - Certification and action-proof freshness windows.
 

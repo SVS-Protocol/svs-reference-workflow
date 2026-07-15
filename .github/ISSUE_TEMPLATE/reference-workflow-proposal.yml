@@ -1,0 +1,125 @@
+name: Propose an SVS reference workflow
+description: Propose one external agent action that a protocol, wallet, treasury, or operator will gate with SVS.
+title: "[Reference workflow]: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this form for public, non-secret pilot coordination. A complete reference workflow must authorize the exact transaction before broadcast, verify the same action after execution, demonstrate a fail-closed rejection, and publish only partner-approved evidence.
+
+        Do not post API keys, signing secrets, wallet keys, access tokens, raw serialized transactions, private strategies, or internal evidence files.
+
+  - type: input
+    id: agent_name
+    attributes:
+      label: External agent name
+      description: Public name of the agent or bot operated outside SVS.
+      placeholder: Example Treasury Agent
+    validations:
+      required: true
+
+  - type: input
+    id: bot_id
+    attributes:
+      label: Public bot ID
+      description: Public SVS bot identifier intended for the pilot. Do not include credentials.
+      placeholder: example-treasury-agent
+    validations:
+      required: true
+
+  - type: input
+    id: controller_wallet
+    attributes:
+      label: Controller wallet public key
+      description: Public Solana address only.
+      placeholder: Solana public key
+    validations:
+      required: true
+
+  - type: input
+    id: registry_asset
+    attributes:
+      label: Official Agent Registry asset
+      description: Public Agent Registry asset address, or state that registration is still needed.
+      placeholder: Registry asset public key or "registration needed"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: network
+    attributes:
+      label: Pilot network
+      options:
+        - devnet
+        - mainnet-beta (constrained workflow only)
+    validations:
+      required: true
+
+  - type: input
+    id: action_type
+    attributes:
+      label: Consequential action type
+      description: Exact action-record txType that the relying party will gate.
+      placeholder: transfer, swap, escrow-contribution, or another exact txType
+    validations:
+      required: true
+
+  - type: textarea
+    id: consequential_reason
+    attributes:
+      label: Why this action requires an acceptance rule
+      description: Explain what value, authority, or irreversible effect is at risk if altered or unauthorized.
+      placeholder: This action moves value and must be rejected if the amount, destination, or approved transaction changes.
+    validations:
+      required: true
+
+  - type: input
+    id: relying_party
+    attributes:
+      label: Relying party
+      description: Protocol, wallet, treasury, platform, or operator that will enforce the SVS rule.
+      placeholder: Organization or project name
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance_boundary
+    attributes:
+      label: Actual enforcement boundary
+      description: Identify where requireAuthorizedAction runs before broadcast and where requireAcceptedAction runs after execution.
+      placeholder: The relayer rejects before broadcast unless authorization passes, then accepts the completed action only after post-execution verification passes.
+    validations:
+      required: true
+
+  - type: textarea
+    id: public_rule
+    attributes:
+      label: Public fail-closed acceptance rule
+      description: State the rule the relying party is willing to enforce and, if approved later, publish.
+      placeholder: We reject this automated action unless SVS authorizes the exact transaction before broadcast and verifies the same action after execution.
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: readiness
+    attributes:
+      label: Pilot readiness
+      options:
+        - label: The agent is operated by a party external to SVS.
+          required: true
+        - label: The relying party can enforce a fail-closed decision at its real execution boundary.
+          required: true
+        - label: The proposed action is safe to run and meaningful enough to reject when unverified.
+          required: true
+        - label: I have not included credentials, private keys, raw transaction bytes, private strategy, or internal evidence.
+          required: true
+
+  - type: checkboxes
+    id: publication
+    attributes:
+      label: Publication intent
+      description: These are intent signals, not final publication approval. Final approval is requested after the sanitized result is reviewed.
+      options:
+        - label: We are open to publishing the agent and relying-party names if the pilot succeeds.
+        - label: We are open to publishing the sanitized verification result and case study after review.
+

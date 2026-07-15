@@ -1,0 +1,9 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Private pilot intake
+    url: https://svsprotocol.com/get-verified
+    about: Use the private intake when the initial proposal should not be public.
+  - name: Security disclosure
+    url: https://svsprotocol.com/security-review
+    about: Review the security scope and use the private disclosure route for vulnerabilities.
+

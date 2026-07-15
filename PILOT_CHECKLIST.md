@@ -57,4 +57,3 @@ private.
 
 Completion requires every section. Publication intent in an issue is not final
 publication approval.
-

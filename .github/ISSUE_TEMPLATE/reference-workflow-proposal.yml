@@ -122,4 +122,3 @@ body:
       options:
         - label: We are open to publishing the agent and relying-party names if the pilot succeeds.
         - label: We are open to publishing the sanitized verification result and case study after review.
-

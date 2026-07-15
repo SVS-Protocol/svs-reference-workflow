@@ -18,6 +18,14 @@ The runner enforces two phases:
 It then writes a sanitized JSON result and a draft case study. It never writes
 API keys or request-signing secrets into either output.
 
+## Propose a pilot
+
+Use the structured [reference workflow proposal](https://github.com/SVS-Protocol/svs-reference-workflow/issues/new?template=reference-workflow-proposal.yml)
+for public, non-secret coordination. Use the [private SVS intake](https://svsprotocol.com/get-verified)
+when the initial proposal should not be public. The [pilot checklist](./PILOT_CHECKLIST.md)
+defines the exact preparation, authorization, execution, verification, and
+publication steps.
+
 ## Start
 
 ```sh

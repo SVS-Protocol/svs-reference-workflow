@@ -14,7 +14,10 @@
   },
   "dependencies": {
     "@solana/web3.js": "1.98.4",
-    "@svsprotocol/solana": "0.5.0",
+    "@svsprotocol/solana": "0.6.0",
     "8004-solana": "0.8.3"
+  },
+  "overrides": {
+    "uuid": "11.1.1"
   }
 }

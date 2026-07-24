@@ -8,6 +8,7 @@ import {
 } from "../lib/reference-workflow.mjs";
 
 const NOW = new Date("2026-07-15T00:00:00.000Z");
+const SERIALIZED_TRANSACTION = "ZXhhY3QtdHJhbnNhY3Rpb24=";
 const manifest = {
   version: "svs.reference-workflow-manifest.v1",
   workflowId: "external-treasury-transfer",
@@ -51,17 +52,19 @@ describe("SVS reference workflow", () => {
     assert.equal(validateReferenceWorkflowManifest(manifest).ok, true);
   });
 
-  it("authorizes the exact serialized transaction and proves an altered action fails", async () => {
+  it("authorizes the exact serialized transaction and proves an altered transaction fails", async () => {
     const calls = [];
     const result = await runReferenceAuthorization({
       manifest,
       actionRecordId: "record-1",
-      serializedTransaction: "ZXhhY3QtdHJhbnNhY3Rpb24=",
+      serializedTransaction: SERIALIZED_TRANSACTION,
       agentRegistryIdentity: { expectedNetwork: "devnet" },
       now: NOW,
       requireAuthorizedAction: async (options) => {
         calls.push(options);
-        if (options.action !== "transfer") throw authorizedActionError();
+        if (options.expectedSerializedTransaction !== SERIALIZED_TRANSACTION) {
+          throw authorizedActionError();
+        }
         return authorizedActionResult();
       }
     });
@@ -72,12 +75,39 @@ describe("SVS reference workflow", () => {
     assert.equal(result.authorizedAction.serializedTransactionHash, "b".repeat(64));
     assert.equal(result.rejectionProbe.errorName, "SvsAuthorizedActionError");
     assert.equal(calls.length, 2);
-    assert.equal(calls[0].expectedSerializedTransaction, "ZXhhY3QtdHJhbnNhY3Rpb24=");
+    assert.equal(calls[0].expectedSerializedTransaction, SERIALIZED_TRANSACTION);
+    assert.equal(calls[1].action, "transfer");
+    assert.notEqual(calls[1].expectedSerializedTransaction, SERIALIZED_TRANSACTION);
+    assert.equal(
+      Buffer.from(calls[1].expectedSerializedTransaction, "base64").length,
+      Buffer.from(SERIALIZED_TRANSACTION, "base64").length
+    );
     assert.equal(calls[0].requireTransactionBinding, true);
     assert.equal(calls[0].requireSignedRequest, true);
     assert.equal(calls[0].requireSuccessfulSimulation, true);
     assert.equal(calls[0].requireConfirmedFeePayment, true);
+    assert.equal(result.rejectionProbe.probeType, "serialized_transaction_mismatch");
+    assert.equal(result.rejectionProbe.failedCheck, "Exact serialized transaction");
     assert.match(result.resultHash, /^[a-f0-9]{64}$/);
+  });
+
+  it("does not treat another authorization failure as transaction-mismatch proof", async () => {
+    let callCount = 0;
+    await assert.rejects(
+      runReferenceAuthorization({
+        manifest,
+        actionRecordId: "record-1",
+        serializedTransaction: SERIALIZED_TRANSACTION,
+        agentRegistryIdentity: { expectedNetwork: "devnet" },
+        now: NOW,
+        requireAuthorizedAction: async () => {
+          callCount += 1;
+          if (callCount === 1) return authorizedActionResult();
+          throw authorizedActionError("Policy decision allowed");
+        }
+      }),
+      /did not fail at exact transaction binding/
+    );
   });
 
   it("requires the matching authorization artifact before post-execution acceptance", async () => {
@@ -134,11 +164,13 @@ function createAuthorizationResult() {
   return runReferenceAuthorization({
     manifest,
     actionRecordId: "record-1",
-    serializedTransaction: "ZXhhY3QtdHJhbnNhY3Rpb24=",
+    serializedTransaction: SERIALIZED_TRANSACTION,
     agentRegistryIdentity: { expectedNetwork: "devnet" },
     now: NOW,
     requireAuthorizedAction: async (options) => {
-      if (options.action !== "transfer") throw authorizedActionError();
+      if (options.expectedSerializedTransaction !== SERIALIZED_TRANSACTION) {
+        throw authorizedActionError();
+      }
       return authorizedActionResult();
     }
   });
@@ -180,13 +212,13 @@ function acceptedActionResult() {
   };
 }
 
-function authorizedActionError() {
+function authorizedActionError(failedCheck = "Exact serialized transaction") {
   const error = new Error("Action authorization failed.");
   error.name = "SvsAuthorizedActionError";
   error.details = {
     status: "rejected",
     nextAction: { code: "action_authorization_failed" },
-    firstFailure: { name: "Action matches approved record" }
+    firstFailure: { name: failedCheck }
   };
   return error;
 }

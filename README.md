@@ -10,7 +10,8 @@ The runner enforces two phases:
 1. Before broadcast, the exact serialized transaction must pass
    `requireAuthorizedAction`, including signed request, current human approval,
    simulation, fee state, transaction binding, certification, and official
-   Agent Registry wallet binding. An altered action probe must fail closed.
+   Agent Registry wallet binding. A byte-altered serialized-transaction probe
+   must fail specifically at exact transaction binding.
 2. After execution, the same record must pass `requireAcceptedAction`, including
    execution evidence, custom receipt-registry proof, independent verification,
    freshness, and a second altered-action rejection probe.
@@ -66,8 +67,8 @@ npm run verify
 Outputs:
 
 - `output/verification-result.json`: exact accepted-action decision plus the
-  pre-execution authorization handoff and mandatory post-execution mismatch
-  rejection result.
+  pre-execution transaction-mismatch rejection handoff and mandatory
+  post-execution action-proof mismatch rejection result.
 - `output/case-study.md`: sanitized case-study draft. It remains clearly marked
   as a draft until both partner names and publication are approved.
 

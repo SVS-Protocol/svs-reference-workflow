@@ -35,7 +35,8 @@ private.
 - [ ] Put the exact approved serialized transaction in the local `.env` only.
 - [ ] Run `npm run authorize` before signing, relaying, or broadcasting.
 - [ ] Stop if authorization fails.
-- [ ] Confirm the deliberate action mismatch is rejected for an SVS action-binding reason.
+- [ ] Confirm the byte-altered serialized transaction is rejected specifically
+      by the `Exact serialized transaction` binding check.
 - [ ] Preserve `output/authorization-result.json` as the pre-execution handoff.
 
 ## 4. Execute and verify
